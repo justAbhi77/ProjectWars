@@ -27,6 +27,9 @@ public class Menu_Manager : MonoBehaviour
         options_menu.SetActive(!options_menu.activeSelf);
         main_menu.SetActive(!main_menu.activeSelf);
 
+        // Manual call to clear the mouse pointer after menu change
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        
         // see Unity Manual for further explaination on GameObject.activeSelf
     }
 
