@@ -14,14 +14,21 @@ public class Soldier_Movement : MonoBehaviour
     [SerializeField]
     bool working = false;
 
-    List<Node> path;
+    [SerializeField]
+    List<Vector3> path;
+
+    [SerializeField]
+    float waitforseconds=3,lerpvalue=3;
 
     public static Soldier_Movement self;
+
+    WaitForSeconds wait;
 
     void Awake()
     {
         self = this;
-        path = new List<Node>();
+        path = new List<Vector3>();
+        wait = new WaitForSeconds(waitforseconds);
     }
 
     public void move(Vector3 pos)
@@ -45,7 +52,14 @@ public class Soldier_Movement : MonoBehaviour
         StartCoroutine(FindPathandmove(pos));
     }
 
-    IEnumerator FindPathandmove(Vector3 dest_pos)
+    IEnumerator FindPathandmove(Vector3 Dest_pos)
+    {
+        yield return StartCoroutine(FindPath(Dest_pos));
+
+        yield return Guimove();
+    }
+
+    IEnumerator FindPath(Vector3 dest_pos)
     {
         path.Clear();
 
@@ -54,6 +68,7 @@ public class Soldier_Movement : MonoBehaviour
         float newMovementCostToNeighbour;
 
         List<Node> openlist = new List<Node>();
+        List<Node> closedlist = new List<Node>();
 
         openlist.Add(new Node(transform.position));
 
@@ -65,11 +80,14 @@ public class Soldier_Movement : MonoBehaviour
             current = openlist[0];
 
             openlist.Remove(current);
-            path.Add(current);
+
+            yield return wait;
+
+            closedlist.Add(current);
 
             if ((Vector2)current.position == (Vector2)dest_pos)
             {
-                Node n = path[path.IndexOf(current)];
+                Node n = closedlist[closedlist.IndexOf(current)];
                 
                 Debug.Log("path start");
                 int i = 0;
@@ -82,8 +100,11 @@ public class Soldier_Movement : MonoBehaviour
                     pathrender.positionCount++;
                     Debug.Log(n.position+" "+n.cost);
                     pathrender.SetPosition(i, n.position);
+                    path.Add(n.position);
                     n = n.parent;
                     i++;
+
+                    yield return null;
                 }
                 
                 yield return null;
@@ -93,14 +114,19 @@ public class Soldier_Movement : MonoBehaviour
                 pathrender.SetPosition(i, transform.position);
                 Debug.Log("path end");
 
-                working = false;
+                yield return null;
+
+                path.Reverse();
+
+                yield return null;
+
                 break;
             }
             yield return null;
 
             foreach (Node neighbour in getneighbours(current.position))
             {
-                if (path.Contains(neighbour))
+                if (closedlist.Contains(neighbour))
                     continue;
 
                 newMovementCostToNeighbour = getCost(dest_pos, neighbour.position);
@@ -111,8 +137,6 @@ public class Soldier_Movement : MonoBehaviour
                 if (!openlist.Contains(neighbour))
                     openlist.Add(neighbour);
             }
-
-            yield return null;
 
             openlist = openlist.OrderBy(a => a.cost).ToList();
 
@@ -165,12 +189,29 @@ public class Soldier_Movement : MonoBehaviour
         RaycastHit2D hitinfo = Physics2D.Raycast(pos, Vector3.forward * 2);
 
         if (hitinfo.collider.gameObject.name.Contains("Road"))
-            return dis + 1;
+            return dis + .7f;
 
         else if (hitinfo.collider.gameObject.name.Contains("Plain"))
-            return dis + 2;
+            return dis + 1;
         
-        return dis + 3;
+        return dis + 2;
+    }
+
+    IEnumerator Guimove()
+    {
+        for(int i = 0; i < path.Count; i++)
+        {
+            while ((transform.position - path[i]).sqrMagnitude > Mathf.Epsilon)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, path[i], lerpvalue * Time.deltaTime);
+                yield return null;
+            }
+
+            transform.position = path[i];
+            yield return null;
+        }
+
+        working = false;
     }
 
 }

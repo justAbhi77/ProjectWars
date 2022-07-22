@@ -3354,9 +3354,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c027daea03dba5498da22c5c6b5b0e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 8
+  range: 6
   pathrender: {fileID: 171852185}
   working: 0
+  path: []
+  waitforseconds: 1.5
+  lerpvalue: 2
 --- !u!1 &1726075837
 GameObject:
   m_ObjectHideFlags: 0
