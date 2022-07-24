@@ -2557,7 +2557,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target_framerate: 62
-  fps_lmt: 0
+  fps_lmt: 1
 --- !u!1 &1347597362
 GameObject:
   m_ObjectHideFlags: 0
@@ -3268,6 +3268,7 @@ GameObject:
   - component: {fileID: 1690989479}
   - component: {fileID: 1690989478}
   - component: {fileID: 1690989480}
+  - component: {fileID: 1690989481}
   m_Layer: 0
   m_Name: Soldier
   m_TagString: Untagged
@@ -3354,12 +3355,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c027daea03dba5498da22c5c6b5b0e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 6
+  range: 11
   pathrender: {fileID: 171852185}
+  anim: {fileID: 0}
   working: 0
   path: []
-  waitforseconds: 1.5
+  waitforseconds: 0.2
   lerpvalue: 2
+--- !u!95 &1690989481
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1690989477}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 18c8c6c01616f7146a5d71d1edd49e6f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1726075837
 GameObject:
   m_ObjectHideFlags: 0

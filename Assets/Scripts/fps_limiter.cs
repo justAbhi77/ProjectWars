@@ -11,7 +11,7 @@ public class fps_limiter : MonoBehaviour
     [SerializeField, Range(60, 144)]
     int target_framerate = 62;
     [SerializeField]
-    bool fps_lmt;
+    bool fps_lmt=true;
 
     void Start()
     {

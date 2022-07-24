@@ -12,13 +12,16 @@ public class Soldier_Movement : MonoBehaviour
     LineRenderer pathrender;
 
     [SerializeField]
+    Animator anim;
+
+    [SerializeField]
     bool working = false;
 
     [SerializeField]
     List<Vector3> path;
 
     [SerializeField]
-    float waitforseconds=3,lerpvalue=3;
+    float waitforseconds = 3, lerpvalue = 3;
 
     public static Soldier_Movement self;
 
@@ -29,6 +32,7 @@ public class Soldier_Movement : MonoBehaviour
         self = this;
         path = new List<Vector3>();
         wait = new WaitForSeconds(waitforseconds);
+        anim = GetComponent<Animator>();
     }
 
     public void move(Vector3 pos)
@@ -88,7 +92,7 @@ public class Soldier_Movement : MonoBehaviour
             if ((Vector2)current.position == (Vector2)dest_pos)
             {
                 Node n = closedlist[closedlist.IndexOf(current)];
-                
+
                 Debug.Log("path start");
                 int i = 0;
                 pathrender.positionCount = 0;
@@ -98,7 +102,7 @@ public class Soldier_Movement : MonoBehaviour
                 while (n.parent != null)
                 {
                     pathrender.positionCount++;
-                    Debug.Log(n.position+" "+n.cost);
+                    Debug.Log(n.position + " " + n.cost);
                     pathrender.SetPosition(i, n.position);
                     path.Add(n.position);
                     n = n.parent;
@@ -106,7 +110,7 @@ public class Soldier_Movement : MonoBehaviour
 
                     yield return null;
                 }
-                
+
                 yield return null;
 
                 pathrender.positionCount++;
@@ -182,7 +186,7 @@ public class Soldier_Movement : MonoBehaviour
         return neighbours;
     }
 
-    float getCost(Vector3 dest,Vector3 pos)
+    float getCost(Vector3 dest, Vector3 pos)
     {
         int dis = (int)(Mathf.Abs(dest.x - pos.x) + Mathf.Abs(dest.y - pos.y));
 
@@ -193,14 +197,31 @@ public class Soldier_Movement : MonoBehaviour
 
         else if (hitinfo.collider.gameObject.name.Contains("Plain"))
             return dis + 1;
-        
+
         return dis + 2;
     }
 
     IEnumerator Guimove()
     {
-        for(int i = 0; i < path.Count; i++)
+        Vector3 dir;
+
+        yield return null;
+
+        for (int i = 0; i < path.Count; i++)
         {
+            dir = path[i] - transform.position;
+            dir.z = 0;
+            print(dir);
+
+            if (dir == Vector3.up)
+                anim.SetBool("up", true);
+            else if (dir == Vector3.down)
+                anim.SetBool("down", true);
+            else if (dir == Vector3.left)
+                anim.SetBool("left", true);
+            else if (dir == Vector3.right)
+                anim.SetBool("right", true);
+
             while ((transform.position - path[i]).sqrMagnitude > Mathf.Epsilon)
             {
                 transform.position = Vector3.MoveTowards(transform.position, path[i], lerpvalue * Time.deltaTime);
@@ -209,9 +230,21 @@ public class Soldier_Movement : MonoBehaviour
 
             transform.position = path[i];
             yield return null;
+
+            anim.SetBool("right", false);
+            anim.SetBool("left", false);
+            anim.SetBool("up", false);
+            anim.SetBool("down", false);
         }
 
+        yield return null;
+
         working = false;
+
+        anim.SetBool("right", false);
+        anim.SetBool("left", false);
+        anim.SetBool("up", false);
+        anim.SetBool("down", false);
     }
 
 }
