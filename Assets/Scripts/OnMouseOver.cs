@@ -34,5 +34,6 @@ public class OnMouseOver : MonoBehaviour,IPointerEnterHandler,IPointerExitHandle
     public void OnPointerExit(PointerEventData eventData)
     {
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        //null defaults to the system pointer.
     }
 }

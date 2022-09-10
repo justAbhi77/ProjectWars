@@ -5,16 +5,19 @@ public class Menu_Manager : MonoBehaviour
 {
     [SerializeField]
     GameObject main_menu,options_menu;
+    //The Gameobjects that are to be switched.
 
     void Start()
     {
         options_menu.SetActive(false);
+        // options should not be displayed at the begining.
         main_menu.SetActive(true);
     }
 
     public void Startbtn()
     {
         SceneManager.LoadSceneAsync(1);
+        //Pressing start should load the game.
     }
 
     /// <summary>
@@ -24,17 +27,18 @@ public class Menu_Manager : MonoBehaviour
     {
         // activeSelf returns the local active state of this GameObject.
         // Since the gameobjects here are all Parents so both activeSelf and activeInHierarchy work the same here.
+        
         options_menu.SetActive(!options_menu.activeSelf);
         main_menu.SetActive(!main_menu.activeSelf);
 
-        // Manual call to clear the mouse pointer after menu change
-        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-        
         // see Unity Manual for further explaination on GameObject.activeSelf
+
+        // Manual call to clear the mouse pointer after menu change
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);        
     }
 
     /// <summary>
-    /// Quit the application entirely.
+    /// Quits the application.
     /// </summary>
     public void quit()
     {

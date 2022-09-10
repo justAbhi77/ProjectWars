@@ -21,34 +21,33 @@ public class Soldier_Movement : MonoBehaviour
     List<Vector3> path;
 
     [SerializeField]
-    float waitforseconds = 3, lerpvalue = 3;
+    float lerpvalue = 3;
 
     public static Soldier_Movement self;
 
-    WaitForSeconds wait;
-
     void Awake()
     {
-        self = this;
+        self = this; 
         path = new List<Vector3>();
-        wait = new WaitForSeconds(waitforseconds);
         anim = GetComponent<Animator>();
     }
 
     public void move(Vector3 pos)
     {
-        pathrender.positionCount = 0;
         if (working)
             return;
 
-        int dis = (int)(Mathf.Abs(pos.x - transform.position.x) + Mathf.Abs(pos.y - transform.position.y));
+        pathrender.positionCount = 0; //reset after click
 
+        //Calculating distance.
+        int dis = (int)(Mathf.Abs(pos.x - transform.position.x) + Mathf.Abs(pos.y - transform.position.y));
+        //Checking valid/invalid.
         if (dis > range)
         {
             Debug.Log("Range error Given " + dis + " Expected " + range);
             return;
         }
-
+        //Valid Path Start Pathfinding.
         working = true;
 
         Debug.Log(dis + " " + pos);
@@ -58,11 +57,14 @@ public class Soldier_Movement : MonoBehaviour
 
     IEnumerator FindPathandmove(Vector3 Dest_pos)
     {
-        yield return StartCoroutine(FindPath(Dest_pos));
+        yield return StartCoroutine(FindPath(Dest_pos)); //Pathfinding
 
-        yield return Guimove();
+        yield return Guimove(); //Gui Movement
     }
 
+    /// <summary>
+    /// Implementing A* Pathfinding.
+    /// </summary>
     IEnumerator FindPath(Vector3 dest_pos)
     {
         path.Clear();
@@ -85,7 +87,7 @@ public class Soldier_Movement : MonoBehaviour
 
             openlist.Remove(current);
 
-            yield return wait;
+            yield return null;
 
             closedlist.Add(current);
 
@@ -107,8 +109,6 @@ public class Soldier_Movement : MonoBehaviour
                     path.Add(n.position);
                     n = n.parent;
                     i++;
-
-                    yield return null;
                 }
 
                 yield return null;
@@ -143,11 +143,6 @@ public class Soldier_Movement : MonoBehaviour
             }
 
             openlist = openlist.OrderBy(a => a.cost).ToList();
-
-            Debug.Log("Openlist start");
-            foreach (Node node in openlist)
-                Debug.Log(node.position + " " + node.cost);
-            Debug.Log("Openlist end");
 
             yield return null;
         }

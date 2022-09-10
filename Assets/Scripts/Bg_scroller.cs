@@ -25,13 +25,16 @@ public class Bg_scroller : MonoBehaviour
     void Start()
     {
         bg_image = GetComponent<RawImage>();
+        //Making a rectangle with the proportions of the background
         image_rect = new Rect(bg_image.uvRect.position, bg_image.uvRect.size);
     }
 
     void FixedUpdate()
     {
-        bg_image.uvRect = image_rect;
 
+        bg_image.uvRect = image_rect;
+        /*moving the image by speed times Time.deltatime to keep it uniform in
+        /different systems.*/
         image_rect.position += scroll_speed * Time.deltaTime;
     }
 }

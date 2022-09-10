@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
+/// <summary>
+/// Scrolls the menu.
+/// </summary>
 public class MainMenu_scroller : MonoBehaviour
 {
     List<RectTransform> children;
@@ -23,6 +26,7 @@ public class MainMenu_scroller : MonoBehaviour
         childcount = transform.childCount;
 
         incenter = childcount / 2;
+        //The center most child will be at the center of the screen.
 
         for (int i = 0; i < childcount; i++)
         {
@@ -31,6 +35,7 @@ public class MainMenu_scroller : MonoBehaviour
         }
 
         children[incenter].GetComponent<Animator>().enabled = true;
+        //Animating the centermost child for visual feedback.
     }
 
     void Update()
@@ -45,19 +50,24 @@ public class MainMenu_scroller : MonoBehaviour
 
     IEnumerator MoveUp()
     {
-        working = true;
+        working = true; 
 
-        yield return null;
+        yield return null; 
 
+        /*During Right shift the last element should cycle to the front of the list
+          thus the visual feedback for the last element should be turned off.
+        */
         invisiblemovement -= 1;
         if (invisiblemovement < 0)
             invisiblemovement += childcount;
 
         yield return null;
 
-        children[invisiblemovement].gameObject.SetActive(false);
+        children[invisiblemovement].gameObject.SetActive(false); //last element turned off
         children[incenter].GetComponent<Animator>().enabled = false;
         children[incenter].localScale = Vector3.one;
+
+        //Right Shifting list
 
         Vector2 temp = children[0].anchoredPosition;
 
@@ -68,7 +78,12 @@ public class MainMenu_scroller : MonoBehaviour
 
         children[childcount - 1].DOLocalMove(temp, lerptime, true).OnComplete(() => Changebool(invisiblemovement));
 
+        /*After the right shift has occured, the respective animations and gameobjects 
+          need to be switched on.
+        */
         yield return null;
+
+        //The center pointer needs to be updated
 
         incenter -= 1;
 
@@ -78,6 +93,11 @@ public class MainMenu_scroller : MonoBehaviour
 
     IEnumerator MoveDown()
     {
+        /*
+         Same as MoveUp() method
+         The list is left shifted not right.
+        */
+
         working = true;
 
         yield return null;
